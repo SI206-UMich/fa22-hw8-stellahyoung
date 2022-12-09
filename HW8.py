@@ -9,7 +9,23 @@ def get_restaurant_data(db_filename):
     dictionaries. The key:value pairs should be the name, category, building, and rating
     of each restaurant in the database.
     """
-    pass
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_filename)
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT name, building, category, rating FROM restaurants JOIN buildings ON restaurants.building_id = buildings.id JOIN categories ON restaurants.category_id = categories.id"
+    )
+    data = cur.fetchall()
+    restaurant = []
+    for i in data:
+        dictio = {}
+        dictio['name'] = i[0]
+        dictio['building'] = i[1]
+        dictio['category'] = i[2]
+        dictio['rating'] = i[3]
+        restaurant.append(dictio)
+    return restaurant
+
 
 def barchart_restaurant_categories(db_filename):
     """
@@ -17,17 +33,42 @@ def barchart_restaurant_categories(db_filename):
     restaurant categories and the values should be the number of restaurants in each category. The function should
     also create a bar chart with restaurant categories and the counts of each category.
     """
-    pass
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_filename)
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(categories.category), categories.category FROM restaurants JOIN categories ON restaurants.category_id = categories.id GROUP BY category")
+    data = cur.fetchall()
+
+    dict ={}
+    for i in data:
+        count = i[0]
+        category = i[1]
+        dict[category] = count
+    
+    restaurants = []
+    category = []
+    for i in dict:
+        restaurants.append(i)
+        category.append(dict[i])
+
+    plt.barh(restaurants, category)
+    plt.xlabel("Num of Restaurants")
+    plt.ylabel("Categories")
+    plt.title("Types of Restaurants on South University Ave")
+    plt.tight_layout()
+    plt.show()
+    
+    return dict
 
 #EXTRA CREDIT
-def highest_rated_category(db_filename):#Do this through DB as well
-    """
-    This function finds the average restaurant rating for each category and returns a tuple containing the
-    category name of the highest rated restaurants and the average rating of the restaurants
-    in that category. This function should also create a bar chart that displays the categories along the y-axis
-    and their ratings along the x-axis in descending order (by rating).
-    """
-    pass
+#def highest_rated_category(db_filename):#Do this through DB as well
+  #  """
+  #  This function finds the average restaurant rating for each category and returns a tuple containing the
+   # category name of the highest rated restaurants and the average rating of the restaurants
+  #  in that category. This function should also create a bar chart that displays the categories along the y-axis
+  #  and their ratings along the x-axis in descending order (by rating).
+  #  """
+  #  pass
 
 #Try calling your functions here
 def main():
@@ -71,10 +112,10 @@ class TestHW8(unittest.TestCase):
         self.assertEqual(cat_data, self.cat_dict)
         self.assertEqual(len(cat_data), 14)
 
-    def test_highest_rated_category(self):
-        best_category = highest_rated_category('South_U_Restaurants.db')
-        self.assertIsInstance(best_category, tuple)
-        self.assertEqual(best_category, self.best_category)
+   # def test_highest_rated_category(self):
+   #     best_category = highest_rated_category('South_U_Restaurants.db')
+   #    self.assertIsInstance(best_category, tuple)
+   #     self.assertEqual(best_category, self.best_category)
 
 if __name__ == '__main__':
     main()
