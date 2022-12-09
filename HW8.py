@@ -54,7 +54,7 @@ def barchart_restaurant_categories(db_filename):
     plt.barh(restaurants, category)
     plt.xlabel("Num of Restaurants")
     plt.ylabel("Categories")
-    plt.title("Types of Restaurants on South University Ave")
+    plt.title("Types of Restaurants on South U")
     plt.tight_layout()
     plt.show()
     
