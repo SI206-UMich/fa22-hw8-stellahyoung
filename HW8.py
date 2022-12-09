@@ -1,3 +1,6 @@
+# Name: Stella Young 
+# Worked With: Elizabeth Kim 
+
 import matplotlib.pyplot as plt
 import os
 import sqlite3
